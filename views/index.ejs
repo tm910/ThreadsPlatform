@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/icomoon (1)/style.css">
+    <title>Threads</title>
+  </head>
+
+  <body class="bg-[#0a0a0a] font-sans">
+    <nav class="fixed top-0 w-[100%] shadow-md p-3 sm:py-4 sm:px-8 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="text-white text-2xl font-bold tracking-tight">Threads</span>
+      </div>
+      <div class="flex gap-1 sm:gap-4 ">
+        <a href="#"
+          class="text-gray-700 text-sm  hover:text-black hover:bg-gray-300 rounded p-1 font-medium">Explore</a>
+        <a href="/signup"
+          class="text-sm  text-gray-700 hover:text-black hover:bg-gray-300 p-1 rounded font-bold">Signup</a>
+        <a href="/login"
+          class=" text-sm  text-gray-700 hover:text-black  bg-gray-300 rounded shadow-md p-1 font-bold">Login</a>
+      </div>
+    </nav>
+    <div class="mb-[60px] sm:mb-[100px]"></div>
+    <main class="flex mx-auto mt-10  md:flex-row-reverse">
+      <!-- buttons -->
+      <div>
+        <div class="
+           flex 
+           flex-row justify-center gap-3 p-2 
+           md:flex-col
+           z-10
+           md:bg-transparent
+         bg-black
+           md:relative
+           absolute bottom-0
+           md:w-fit
+           w-[100vw]
+           
+         ">
+          <a href="/" class="hover:bg-gray-800 p-2 rounded transition-all"><span
+              class="hover:opacity-100 icon-home text-white text-3xl "></span></a>
+          <a href="/search" class="hover:bg-gray-800 p-2 rounded transition-all"><span
+              class="hover:opacity-100 icon-search2 text-white text-3xl opacity-30"></span></a>
+          <a href="/likes" class="hover:bg-gray-800 p-2 rounded transition-all"><span
+              class="hover:opacity-100 icon-heart-outline text-white text-3xl opacity-30"></span></a>
+          <a href="/profile" class="hover:bg-gray-800 p-2 rounded transition-all"><span
+              class="hover:opacity-100 icon-user text-white text-3xl opacity-30"></span></a>
+        </div>
+      </div>
+      <!-- Contents -->
+      <div class="sm:rounded-3xl h-[75vh] sm:bg-[#181818] mx-auto custom-scroll overflow-y-auto p-4 w-[100%] sm:w-[80%] ">
+        <div class="max-h-[90vh]  text-white">
+          <!-- Write your code here  -->
+          <!-- Send Post -->
+          <div class="flex justify-between items-center w-[100%] text-white" dir="rtl">
+            <form id="postForm" class="flex w-full">
+              <input class="bg-transparent focus:outline-none opacity-40 sm:w-72 cursor-text" placeholder="ما الجديد"
+                name="content" />
+              <button type="submit"
+                class="ms-auto block text-xs sm:text-lg rounded border-2 border-gray-300/30 px-2 sm:px-4 pb-[6px] pt-1 text-lg font-medium uppercase leading-normal text-white transition duration-150 ease-in-out  focus:outline-none focus:ring-0 active:border-neutral-900 active:text-neutral-900 motion-reduce:transition-none dark:text-neutral-600 dark:hover:bg-neutral-900 dark:focus:bg-neutral-900"
+                data-twe-ripple-init>
+                نشر
+              </button>
+            </form>
+          </div>
+          <hr class="mt-3 opacity-10">
+          <!-- Posts -->
+          <div dir="rtl" class="oldPost min-h-screen p-4 text-white">
+            <% posts.forEach(post => { %>
+              <div class="post relative mx-auto p-4 rounded-l  mb-6">
+
+                <!-- Header -->
+                <div class="flex items-start gap-3">
+                  <!-- Avatar -->
+                  <a href="<%= post.author ? '/profile/' + post.author._id : '#' %>">
+                    <img src="<%= post.author ? post.author.avatar : '/default-avatar.png' %>" alt="avatar"
+                      class="w-10 h-10 rounded-full object-cover">
+                  </a>
+                  <div> 
+                  <h2 class="font-semibold text-white">
+                    <%= post.author ? post.author.username : 'مستخدم مجهول' %>
+                  </h2>
+                    <p class="text-gray-400 text-sm">
+                      <%= moment(post.createdAt).fromNow() %>
+                    </p>
+                  </div>
+
+                  <!-- Bars  -->
+                  <div class="relative bars-post ms-auto cursor-pointer" onclick="toggleDeleteBtn(this)">
+                    <span class="block text-xs m-0 opacity-30 icon-media-record-outline"></span>
+                    <span class="block text-xs m-0 opacity-30 icon-media-record-outline"></span>
+                    <span class="block text-xs m-0 opacity-30 icon-media-record-outline"></span>
+                  </div>
+
+                  <!-- Del  -->
+                  <div
+                    class="list-buttons hidden left-2 top-16 absolute duration-150 ease-linear transition-all flex justify-end">
+                    <button class="delete-btn bg-red-600 text-white px-3 py-1 rounded flex items-center gap-1"
+                      onclick="delPost('<%= post._id %>', this)">
+                      <i class="icon-bin"></i>
+                      حذف
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <% const isCurrentUserLiked=post.likes.some(like=> like._id == currentUser.id) ? 'text-pink-500' : ''
+                    %>
+                </div>
+
+
+
+                <!-- Post content -->
+                <div class="mt-3 text-gray-200 text-base leading-relaxed">
+                  <%= post.content %>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-4 mt-4 text-gray-400 text-xl ">
+                  <button id="likeBtn" class="flex gap-1 items-center hover:text-pink-500 transition"
+                    onclick="toggleLike('<%= post._id %>', this)"><span class="text-sm <%= isCurrentUserLiked %>">
+                      <%= post.likes.length %>
+                    </span><i class="text-md icon-heart-outline <%= isCurrentUserLiked %>"></i></button>
+                  <button class="flex gap-1 items-center hover:text-blue-400 transition"
+                    onclick="comments('<%= post._id %>', this)"><span class="text-sm">
+                      <%= post.comments.length %>
+                    </span><i class=" text-sm icon-bubble"></i></button>
+                </div>
+                <hr class="mt-3 opacity-10">
+
+                <!-- Comments  -->
+                <div
+                  class="comments fixed z-30 shadow-4 shadow-gray-500/30 rounded-md bottom-[0%] left-0 w-[100%] h-[60vh] sm:top-[50%] sm:bottom-[50%] sm:left-[50%] hidden translate-y-full duration-150 transition-all ease-linear sm:w-[50%] sm:h-[60vh] bg-[#181818]">
+                  <ul class="overflow-auto sm:h-[60vh]">
+                    <% post.comments.forEach(comment=> { %>
+                      <li>
+                        <div class="comment-post relative mx-auto p-4 rounded-l  mb-6">
+                          <!-- comment header -->
+                          <div class="flex items-start gap-3">
+                            <!-- Avatar -->
+                            <img src="<%= comment.user.avatar %>" alt="<%= comment.user.avatar %>"
+                              class="w-7 h-7 rounded-full object-cover">
+
+                            <!-- Name + time -->
+                            <div>
+                              <h2 class="font-semibold text-white text-sm">
+                                <%= comment.user.username %>
+                              </h2>
+                              <p class="text-gray-400 text-xs">
+                                <%= moment(comment.createdAt).fromNow() %>
+                              </p>
+                            </div>
+
+                            <!-- Bars  -->
+                            <div class="group relative bars-post ms-auto cursor-pointer"
+                              onclick="toggleDeleteBtn(this)">
+                              <span
+                                class="block opacity-30 icon-media-record-outline group-hover:opacity-100 cursor-pointer"
+                                style="font-size: 5px;"></span>
+                              <span
+                                class="block opacity-30 icon-media-record-outline group-hover:opacity-100 cursor-pointer"
+                                style="font-size: 5px;"></span>
+                              <span
+                                class="block opacity-30 icon-media-record-outline group-hover:opacity-100 cursor-pointer"
+                                style="font-size: 5px;"></span>
+                            </div>
+
+                            <!-- Del  -->
+                            <div
+                              class="list-buttons hidden left-2 top-16 absolute duration-150 ease-linear transition-all flex justify-end">
+                              <button class="delete-btn bg-red-600 text-white px-3 py-1 rounded flex items-center gap-1"
+                                onclick="delPost('<%= comment._id %>', this)">
+                                <i class="icon-bin"></i>
+                                حذف
+                              </button>
+                            </div>
+                          </div>
+
+                          <!-- Comment content -->
+                          <div class="mt-3 text-gray-200 text-base leading-relaxed">
+                            <%= comment.text %>
+                          </div>
+
+                          <!-- Buttons Actions -->
+                          <div class="flex gap-4 mt-4 text-gray-400 text-xl ">
+                            <div>
+                              <% const isCurrentUserLikedComment=comment.commentLikes.some(like=> like._id ==
+                                currentUser.id) ? 'text-pink-500' : '' %>
+                            </div>
+                            <button id="likeBtn" class="flex gap-1 items-center hover:text-pink-500 transition"
+                              onclick="toggleReplyLike('<%= comment._id %>', this, '<%= post._id %>')">
+                              <span class="text-sm <%= isCurrentUserLikedComment %>">
+                                <%= comment.commentLikes.length %>
+                              </span>
+                              <i class="text-md icon-heart-outline <%= isCurrentUserLikedComment %>"></i>
+                            </button>
+
+                            <button class="replyIcon flex gap-1 items-center hover:text-blue-400 transition"
+                              onclick="sendReply(this, '<%= post._id %>')">
+                              <span class="text-sm">
+                                <%= comment.replies.length %>
+                              </span>
+                              <i class=" text-sm icon-bubble"></i>
+                            </button>
+                            <% if (comment.replies.length) {  %>
+                              <button class="text-blue-500/70 hover:text-blue-500 text-xs ms-auto hover:underline"
+                              onclick="showReplies(this)">انظر لرد اكثر</button>
+                          <% }  else { %>
+                              <%= '' %>
+                          <% } %>
+                            
+                          </div>
+                          <!-- Reply input (hidden by default) -->
+                          <form id="reply_<%= comment._id %>" class="reply-form hidden mt-2 gap-2 items-center"
+                            data-comment-id="<%= comment._id %>" onsubmit="e => e.preventDefault()">
+                            <input name="reply_text"
+                              class="reply-input flex-1 py-1 px-2 bg-transparent text-white border-0 border-b border-gray-700 focus:outline-none"
+                              type="text" placeholder="اكتب ردك...">
+                            <button class="px-3 py-1 text-white rounded opacity-20 pointer-events-none"
+                              type="submit">نشر</button>
+                          </form>
+                          <!-- Replies  -->
+                          <div class="main-replies my-3 ps-7 hidden">
+                            <% comment.replies.forEach(reply=> { %>
+                              <div>
+                                <% const isCurrentUserLikedReply=reply.replyLikes.some(like=> like._id ==
+                                  currentUser.id) ? 'text-pink-500' : ''%>
+                              </div>
+                              <div>
+                                <div class="flex items-center gap-2 py-3">
+                                  <a href="#">
+                                    <img src="<%= reply.user.avatar %>" alt="<%= reply.user.avatar %>"
+                                      class="w-5 h-5 rounded-full object-cover">
+                                  </a>
+                                  <p class="text-sm">
+                                    <%= reply.text %>
+                                  </p>
+                                  <button
+                                    class="replyLikeBtn flex gap-1 text-gray-400 items-center hover:text-pink-500 transition ms-auto"
+                                    onclick="likeReply(this, '<%= post._id%>','<%= comment._id%>', '<%= reply._id%>')">
+                                    <span class="text-sm <%= isCurrentUserLikedReply %>">
+                                      <%= reply.replyLikes.length %>
+                                    </span>
+                                    <i class="text-md icon-heart-outline <%= isCurrentUserLikedReply %>"></i>
+                                  </button>
+                                </div>
+                              </div>
+                              <% }) %>
+                          </div>
+
+
+                          <hr class="mt-3 opacity-10">
+                        </div>
+                      </li>
+                      <% }) %>
+
+                  </ul>
+                  <form id="commentForm_<%= post._id %>"
+                    class="flex fixed z-10 bottom-0 w-[100%] border-t border-gray-700 bg-[#181818]"
+                    data-post-id="<%= post._id %>" onsubmit="e => e.preventDefault()">
+                    <input name="comment_text"
+                      class="comment-input w-full py-4 px-3 opacity-60 border-0 outline-none focus:outline-transparent bg-transparent"
+                      type="text" placeholder="اضافة تعليق" oninput="toggleSubmitButton(this)">
+                    <button
+                      class="px-3 opacity-20 pointer-events-none text-xs sm:text-lg bg-transparent border-0 outline-none">نشر</button>
+                  </form>
+                </div>
+
+                <!-- Overlay -->
+                <div class="overlay inset-0 hidden fixed z-20 bg-gray-950/20"></div>
+              </div>
+              <% }) %>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div class="-translate-y-full"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      document.getElementById('postForm').addEventListener('submit', e => {
+        e.preventDefault()
+        const formData = e.target;
+        const data = {
+          content: formData.content.value
+        };
+        axios.post('/posts/create', data)
+          .catch(e => {
+            console.log('post error', e)
+          })
+        location.reload()
+      })
+
+      function toggleLike(id, thisElement) {
+
+        const parent = thisElement.closest('.post')
+        const icon = thisElement.querySelector('i')
+
+        try {
+          fetch(`/posts/likes/${id}`, {
+            method: 'POST',
+            credentials: "include"
+          })
+            .then(data => data.json())
+          location.reload()
+        } catch (e) {
+          console.log(e)
+        }
+      }
+
+      function toggleDeleteBtn(thisElement) {
+        const listParent = thisElement.closest('.flex'); // get parent of element
+        const list = listParent.querySelector('.list-buttons'); // get specific element with parent
+        if (thisElement) {
+          list.classList.toggle('hidden');
+        }
+      }
+      function delPost(id, el) {
+        const elementParent = el.closest('.post'); // get parent of element
+        if (confirm('هل أنت متأكد من حذف هذا المنشور؟')) {
+          axios.delete(`/posts/delPost/${id}`, {
+            withCredentials: true
+          })
+            .then((res) => {
+              if (res.data.success) {
+                console.log('delete successfully')
+                elementParent.remove();
+              }
+            })
+            .catch(err => {
+              console.error('Error deleting post:', err);
+            });
+
+        }
+      }
+
+      // // Submit comment
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('form[id^="commentForm_"]').forEach(form => {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const postId = form.getAttribute('data-post-id');
+            const text = form.comment_text.value.trim();
+
+            if (!text) return;
+
+            try {
+              const res = await axios.post(`/posts/comments/${postId}`, { text }, {
+                withCredentials: true
+              })
+              if (!res.data.success) {
+                console.error('فشل إرسال التعليق:', res.data.message);
+                return;
+              }
+              console.log('تم التعليق:', res.data);
+
+              // امسح الحقل بعد الإرسال
+              form.comment_text.value = '';
+              // toggleSubmitButton(form.comment_text); // عطّل الزر
+
+              // ممكن تحدث قائمة التعليقات هنا إذا كنت تعرضها مباشرة
+
+            } catch (err) {
+              console.error('خطأ أثناء إرسال التعليق:', err.response?.data || err.message);
+            }
+          });
+        });
+      })
+
+      function comments(id, thisEl) {
+        const overlay = document.querySelector('.overlay')
+        const oldParent = thisEl.closest('.oldPost')
+        const parent = thisEl.closest('.post')
+        const comment = parent.querySelector('.comments')
+
+        if (comment.classList.contains('translate-y-full')) {
+          comment.classList.add('sm:translate-y-[-50%]', 'sm:translate-x-[-50%]')
+          overlay.classList.remove('hidden')
+          comment.classList.remove('hidden')
+          comment.classList.remove('translate-y-full')
+        } else {
+          comment.classList.remove('sm:translate-y-[-50%]', 'sm:translate-x-[-50%]')
+          comment.classList.add('hidden')
+          comment.classList.add('translate-y-full')
+          overlay.classList.add('hidden')
+        }
+
+      }
+      // Close comments when clicking outside
+      document.querySelector('.overlay').addEventListener('click', () => {
+        const comments = document.querySelectorAll('.comments');
+        comments.forEach(comment => {
+          comment.classList.add('hidden');
+          comment.classList.add('translate-y-full');
+        });
+        document.querySelector('.overlay').classList.add('hidden');
+      });
+
+      // Toggle submit button based on input
+      function toggleSubmitButton(input) {
+        const button = input.nextElementSibling;
+        if (input.value.trim() !== '') {
+          button.classList.remove('pointer-events-none', 'opacity-20');
+          button.classList.add('pointer-events-auto', 'opacity-100');
+        } else {
+          button.classList.add('pointer-events-none', 'opacity-20');
+          button.classList.remove('pointer-events-auto', 'opacity-100');
+        }
+      }
+
+
+      // Enable/disable reply submit button
+      document.addEventListener('input', function (e) {
+        if (e.target.classList.contains('reply-input')) {
+          const btn = e.target.closest('form').querySelector('button[type="submit"]');
+
+          if (e.target.value.trim() !== '') {
+            btn.classList.remove('pointer-events-none', 'opacity-20');
+            btn.classList.add('pointer-events-auto', 'opacity-100');
+          } else {
+            btn.classList.add('pointer-events-none', 'opacity-20');
+            btn.classList.remove('pointer-events-auto', 'opacity-100');
+          }
+        }
+      });
+
+      // Post function
+      function post(url, data) {
+        return fetch(url, {
+          method: 'POST',
+          credentials: "include",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              console.log(data.message);
+            } else {
+              console.error('Error posting data:', data.message);
+            }
+          })
+        location.reload();
+      }
+
+      // Reply to comment
+      function sendReply(thisEl, postId) {
+        const comment_post = thisEl.closest('.comment-post');
+        const form = comment_post.querySelector('form[id^="reply_"]')
+        form.classList.toggle('hidden')
+        form.classList.toggle('flex')
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          form.classList.toggle('hidden')
+          form.classList.toggle('flex')
+          const commentId = form.getAttribute('data-comment-id');
+          const replyText = form.querySelector('.reply-input').value.trim();
+          if (!replyText) return;
+          await post(`/posts/${postId}/reply/${commentId}`, { text: replyText })
+        }, { once: true });
+
+      }
+
+      // Like to Reply
+      function toggleReplyLike(commentId, thisEl, postId) {
+        try {
+          fetch(`/posts/${postId}/commentLikes/${commentId}`, {
+            method: 'POST',
+            credentials: "include"
+          })
+            .then(data => data.json())
+            .then(res => {
+              if (res.success) {
+                console.log(res.message)
+              }
+            })
+        } catch (e) {
+          console.log(e)
+        }
+        location.reload()
+      }
+
+      // Post Reply like 
+      function likeReply(thisEl, postId, commentId, replyId) {
+        const icon = thisEl.querySelector('i')
+        const span = thisEl.querySelector('span')
+
+        try {
+          fetch(`/posts/${postId}/replyLikes/${commentId}/${replyId}`, {
+            method: 'POST',
+            credentials: "include"
+          })
+            .then(data => data.json())
+            .then(res => {
+              if (res.success) {
+                console.log(res.message)
+              }
+            })
+
+        } catch (e) {
+          console.log(e)
+        }
+        location.reload()
+      }
+
+      //Show Replies
+      function showReplies(btnShowMore) {
+        const parentComment = btnShowMore.closest('.comment-post')
+        const hiddenReplies = parentComment.querySelector('.main-replies')
+
+        hiddenReplies.classList.toggle('hidden')
+        
+        if (btnShowMore.textContent == 'انظر لرد اكثر') {
+          btnShowMore.textContent = 'اخفاء الردود'
+        } else {
+          btnShowMore.textContent = 'انظر لرد اكثر'
+        }
+      }
+
+    </script>
+    <script type="text/javascript" src="/js/tw-elements.umd.min.js"></script>
+  </body> 
+</html>

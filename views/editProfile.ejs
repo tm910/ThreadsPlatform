@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/icomoon (1)/style.css">
+  <title>تعديل الملف الشخصي</title>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-black">تعديل الملف الشخصي</h2>
+    <form id="editProfileForm" class="space-y-4" data-userId="<%= user._id %>">
+      <div>
+        <label class="block mb-1 text-gray-700">اسم المستخدم</label>
+        <input type="text" name="username" value="<%= user?.username || '' %>" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" required>
+      </div>
+      <div>
+        <label class="block mb-1 text-gray-700">الصورة الشخصية (Avatar)</label>
+        <input type="file" name="avatar" accept="image/*" class="w-full border rounded-lg px-4 py-2">
+        <% if (user?.avatar) { %>
+          <img src="<%= user.avatar %>" alt="Avatar" class="w-20 h-20 rounded-full mt-2 mx-auto">
+        <% } %>
+      </div>
+      <div>
+        <label class="block mb-1 text-gray-700">أيميل المستخدم</label>
+        <input type="email" name="email" value="<%= user?.email || '' %>"
+          class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black" required>
+      </div>
+      <div>
+        <label class="block mb-1 text-gray-700">نبذة عنك (Bio)</label>
+        <textarea name="bio" rows="3" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"><%= user?.bio || '' %></textarea>
+      </div>
+      <button type="submit" class="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">حفظ التغييرات</button>
+    </form>
+  </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('editProfileForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formElement = event.target;
+          const formData = new FormData(formElement);
+
+          // لو تحتاج تضيف أو تعدل قيم:
+          formData.set('username', formElement.username.value);
+          formData.set('email', formElement.email.value);
+          formData.set('avatar', formElement.avatar.files[0]);
+          formData.set('bio', formElement.bio.value);
+
+        const id = event.target.getAttribute('data-userId')
+
+        // console.log(data);
+        axios.put(`/profile/edit/${id}`, formData, {withCredentials: true})
+            .then(response => {
+                console.log('Profile updated successfully!');
+                setTimeout(() => {
+                    location.href = '/profile';
+                }, 1000);
+            })
+            .catch(error => {
+                console.error('Error updating profile:', error);
+            });
+        });
+    </script>
+</body>
+</html>
