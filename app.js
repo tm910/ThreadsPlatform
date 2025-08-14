@@ -4,7 +4,7 @@ const moment = require('moment');
 const connectDB = require('./config/db');
 const Post = require('./config/postSchema'); // Assuming you have a Post model
 const {getData} = require('./controllers/editProfile.controller')
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
@@ -58,25 +58,15 @@ app.get('/', authMiddleware, getData, async (req, res) => {
 
 // app.use('/', require('./routes/index.js')); // Home route
 app.use('/profile', authMiddleware, require('./routes/profile.js'));
-app.use('/publish', authMiddleware, require('./routes/publish.js'));
 app.use('/likes', authMiddleware, require('./routes/likesContent.js'));
 app.use('/search',authMiddleware, require('./routes/search.js'));
 app.use('/posts', require('./routes/posts.js'));
- 
-// Routes
-// app.use('/auth', require('./routes/auth.routes'));     //authentication routes
-// app.use('/users', require('./routes/user.routes'));   // profile routes
-// app.use('/quotes', require('./routes/quote.routes'));//  quotes routes
- 
 
-   
- 
-// Error handling middleware
-// const errorMiddleware = require('./middlewares/error.middleware');
-// app.use(errorMiddleware);
+app.use((req, res) => {
+  res.status(404).render('errorPage');
+}); 
 
-
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-   
+     

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/icomoon (1)/style.css">
+    <link rel="icon" type="image/png" href="/threads.png">
   <title>تعديل الملف الشخصي</title>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center">
@@ -51,7 +52,6 @@
 
         const id = event.target.getAttribute('data-userId')
 
-        // console.log(data);
         axios.put(`/profile/edit/${id}`, formData, {withCredentials: true})
             .then(response => {
                 console.log('Profile updated successfully!');
